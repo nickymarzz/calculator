@@ -1,0 +1,37 @@
+name: Python Calculator CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Unit Tests
+        run: python -m unittest test_calculator.py
+
+      - name: Build Docker image
+        run: docker build -t python-calculator .
+
+      - name: Run calculator (demonstration)
+        run: |
+          # Generating input in one container and piping to the calculator container
+          docker run -i python-calculator bash -c "echo 10; echo +; echo 5" | docker run -i python-calculator
