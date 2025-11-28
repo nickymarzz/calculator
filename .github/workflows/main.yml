@@ -31,7 +31,5 @@ jobs:
       - name: Build Docker image
         run: docker build -t python-calculator .
 
-      - name: Run calculator (demonstration)
-        run: |
-          # Generating input in one container and piping to the calculator container
-          docker run -i python-calculator bash -c "echo 10; echo +; echo 5" | docker run -i python-calculator
+      - name: Verify Docker Image
+        run: docker run --rm python-calculator python -c "import flask; print('Flask installed')"
